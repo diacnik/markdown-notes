@@ -1,11 +1,20 @@
-package app.markdownotes.util.text;
+package app.markdownotes.utility.text;
 
 import java.io.IOException;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+/**
+ * This class has a static method to format notes with .md formatting.
+ */
 public class MarkdownConverter {
 
+    /**
+     * Formats notes into .md formatting.
+     * @param lines Stream of lines from txt file
+     * @return String of lines formatted for .md
+     * @throws IOException
+     */
     public static String convertToMD (Stream<String> lines) throws IOException {
         Function<String, String> formatMarkdownLine = line -> {
             String trimmedLine = line.trim();
@@ -14,7 +23,7 @@ public class MarkdownConverter {
             if (trimmedLine.startsWith("-")) return line.replaceFirst("-", "* ") + "  ";
             return trimmedLine + "  ";
         };
-        
+
         return lines
                 .map(formatMarkdownLine)
                 .reduce((left, right) -> left + System.lineSeparator() + right)
