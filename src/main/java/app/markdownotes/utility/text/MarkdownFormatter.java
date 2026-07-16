@@ -15,7 +15,7 @@ public class MarkdownFormatter {
      * @return String of lines formatted for .md
      * @throws IOException
      */
-    public static String convertToMD (Stream<String> lines) throws IOException {
+    public static String formatToMD (Stream<String> lines) throws IOException {
         Function<String, String> formatMarkdownLine = line -> {
             String trimmedLine = line.trim();
             if (trimmedLine.isBlank()) return "";

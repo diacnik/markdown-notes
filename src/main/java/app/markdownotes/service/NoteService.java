@@ -24,7 +24,7 @@ public class NoteService {
         String markdownText;
 
         try(Stream<String> lines = Files.lines(uploadedFile.toPath())) {
-            markdownText = MarkdownFormatter.convertToMD(lines);
+            markdownText = MarkdownFormatter.formatToMD(lines);
         }
 
         // TODO: Save file to google cloud storage and url to database
