@@ -1,6 +1,6 @@
 package app.markdownotes.service;
 
-import app.markdownotes.utility.text.MarkdownConverter;
+import app.markdownotes.utility.text.MarkdownFormatter;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.io.File;
@@ -24,7 +24,7 @@ public class NoteService {
         String markdownText;
 
         try(Stream<String> lines = Files.lines(uploadedFile.toPath())) {
-            markdownText = MarkdownConverter.convertToMD(lines);
+            markdownText = MarkdownFormatter.convertToMD(lines);
         }
 
         // TODO: Save file to google cloud storage and url to database

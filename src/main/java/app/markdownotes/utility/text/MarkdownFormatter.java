@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 /**
  * This class has a static method to format notes with .md formatting.
  */
-public class MarkdownConverter {
+public class MarkdownFormatter {
 
     /**
      * Formats notes into .md formatting.
