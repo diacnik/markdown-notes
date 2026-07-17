@@ -1,6 +1,7 @@
 package app.markdownotes.repository;
 
 import app.markdownotes.data.Note;
+import app.markdownotes.data.NoteInsert;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -49,7 +50,7 @@ public class NoteRepository {
         );
     }
 
-    public void insert(Note note) {
+    public void insert(NoteInsert note) {
         String sql = """
                 INSERT INTO note (
                     folder_id,
@@ -59,7 +60,7 @@ public class NoteRepository {
                 VALUES (?, ?, ?);
         """;
 
-        jdbcPipeline.executeUpdate(sql, prepStmt -> bindNoteToPreparedStatement(prepStmt, note));
+        jdbcPipeline.executeUpdate(sql, prepStmt -> bindNoteInsertToPreparedStatement(prepStmt, note));
     }
 
     public void update(Note note) {
@@ -76,9 +77,27 @@ public class NoteRepository {
                 sql,
                 prepStmt -> {
                     bindNoteToPreparedStatement(prepStmt, note);
-                    prepStmt.setLong(4, note.id());
+                    prepStmt.setLong(6, note.id());
                 }
         );
+    }
+
+    private static PreparedStatement bindNoteToPreparedStatement(PreparedStatement prepStmt, Note note) throws SQLException {
+        prepStmt.setLong(1, note.folderId());
+        prepStmt.setObject(2, note.accountId());
+        prepStmt.setString(3, note.fileName());
+        prepStmt.setString(4, note.storageFileName());
+        prepStmt.setString(5, note.url());
+        return prepStmt;
+    }
+
+    private static PreparedStatement bindNoteInsertToPreparedStatement(PreparedStatement prepStmt, NoteInsert note) throws SQLException {
+        prepStmt.setLong(1, note.folderId());
+        prepStmt.setObject(2, note.accountId());
+        prepStmt.setString(3, note.fileName());
+        prepStmt.setString(4, note.storageFileName());
+        prepStmt.setString(5, note.url());
+        return prepStmt;
     }
 
     private static Note mapRowToNote(ResultSet resultSet) throws SQLException {
@@ -86,14 +105,9 @@ public class NoteRepository {
                 resultSet.getLong("id"),
                 resultSet.getLong("folder_id"),
                 resultSet.getObject("account_id", java.util.UUID.class),
-                resultSet.getString("url")
+                resultSet.getString("file_name"),
+                resultSet.getString("storage_file_name"),
+                resultSet.getString("storage_url")
         );
-    }
-
-    private static PreparedStatement bindNoteToPreparedStatement(PreparedStatement prepStmt, Note note) throws SQLException {
-        prepStmt.setLong(1, note.folderId());
-        prepStmt.setObject(2, note.accountId());
-        prepStmt.setString(3, note.url());
-        return prepStmt;
     }
 }
