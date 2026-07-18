@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @ApplicationScoped
 public class NoteRepository {
@@ -49,6 +50,44 @@ public class NoteRepository {
                 resultSet -> resultSet.next() ? Optional.of(mapRowToNote(resultSet)) : Optional.empty()
         );
     }
+
+    public List<Note> getNoteByAccountId(UUID accountId) {
+        String sql = """
+                SELECT * FROM note WHERE account_id = ?;
+        """;
+
+        return jdbcPipeline.executeQuery(
+                sql,
+                prepStmt -> prepStmt.setObject(1, accountId),
+                resultSet ->   {
+                    List<Note> notes = new ArrayList<>();
+                    while (resultSet.next()) {
+                        notes.add(mapRowToNote(resultSet));
+                    }
+                    return notes;
+                }
+        );
+    }
+
+    public List<Note> getNotesByFolderId(long folderId) {
+        String sql = """
+                SELECT * FROM note WHERE folder_id = ?;
+        """;
+
+        return jdbcPipeline.executeQuery(
+                sql,
+                prepStmt -> prepStmt.setLong(1, folderId),
+                resultSet ->   {
+                    List<Note> notes = new ArrayList<>();
+                    while (resultSet.next()) {
+                        notes.add(mapRowToNote(resultSet));
+                    }
+                    return notes;
+                }
+        );
+    }
+
+
 
     public void insert(NoteInsert note) {
         String sql = """
