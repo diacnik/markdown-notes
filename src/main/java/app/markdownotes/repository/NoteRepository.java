@@ -94,9 +94,11 @@ public class NoteRepository {
                 INSERT INTO note (
                     folder_id,
                     account_id,
+                    file_name,
+                    storage_file_name,
                     storage_url
                 )
-                VALUES (?, ?, ?);
+                VALUES (?, ?, ?, ?, ?);
         """;
 
         jdbcPipeline.executeUpdate(sql, prepStmt -> bindNoteInsertToPreparedStatement(prepStmt, note));
@@ -108,6 +110,8 @@ public class NoteRepository {
                 SET
                     folder_id = ?,
                     account_id = ?,
+                    file_name = ?,
+                    storage_file_name = ?,
                     storage_url = ?
                 WHERE id = ?;
         """;

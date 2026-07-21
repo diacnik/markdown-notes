@@ -2,7 +2,7 @@ package app.markdownotes.data;
 
 import java.util.UUID;
 
-public record NoteResponse(
+public record NoteMarkdown(
         long id,
         long folderId,
         UUID accountId,

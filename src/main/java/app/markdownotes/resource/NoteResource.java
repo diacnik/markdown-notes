@@ -2,7 +2,7 @@ package app.markdownotes.resource;
 
 import app.markdownotes.data.Note;
 import app.markdownotes.data.NoteRequest;
-import app.markdownotes.data.NoteResponse;
+import app.markdownotes.data.NoteMarkdown;
 import app.markdownotes.service.NoteService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -11,7 +11,6 @@ import jakarta.ws.rs.core.Response;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 @Path("/notes")
@@ -23,14 +22,21 @@ public class NoteResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Note> getNotes() {
-        return noteService.getAllMarkdownNotes();
+        return noteService.getAllNotes();
     }
 
     @GET
-    @Path(("/{id}"))
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public NoteResponse getNote(@QueryParam("id") long id) {
+    public NoteMarkdown getNote(@PathParam("id") long id) {
         return noteService.getMarkdownNoteById(id);
+    }
+
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Note> getNotesInFolder(@PathParam("id") long folderId) {
+        return noteService.getNotesByFolderId(folderId);
     }
 
     @POST

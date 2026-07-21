@@ -3,7 +3,7 @@ package app.markdownotes.service;
 import app.markdownotes.data.Note;
 import app.markdownotes.data.NoteInsert;
 import app.markdownotes.data.NoteRequest;
-import app.markdownotes.data.NoteResponse;
+import app.markdownotes.data.NoteMarkdown;
 import app.markdownotes.repository.NoteRepository;
 import app.markdownotes.storage.CloudStorageAdapter;
 import app.markdownotes.utility.text.MarkdownFormatter;
@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -36,11 +35,11 @@ public class NoteService {
         repository.delete(note);
     }
 
-    public NoteResponse getMarkdownNoteById(long id) {
+    public NoteMarkdown getMarkdownNoteById(long id) {
         return repository.getNoteById(id)
                 .map(note -> {
                     String markdownText = storage.getMarkdown(note.storageFileName());
-                    return new NoteResponse(
+                    return new NoteMarkdown(
                             note.id(),
                             note.folderId(),
                             note.accountId(),
@@ -53,8 +52,12 @@ public class NoteService {
                 .orElseThrow(() -> new NotFoundException("Note with id " + id + " not found"));
     }
 
-    public List<Note> getAllMarkdownNotes() {
+    public List<Note> getAllNotes() {
         return repository.getAll();
+    }
+
+    public List<Note> getNotesByFolderId(long folderId) {
+        return repository.getNotesByFolderId(folderId);
     }
 
     public void formatAndSaveNote(File uploadedFile, NoteRequest noteReq) throws IOException {
