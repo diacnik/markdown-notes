@@ -1,7 +1,6 @@
 package app.markdownotes.utility.tree;
 
 import app.markdownotes.data.Folder;
-import app.markdownotes.data.FolderTree;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +21,9 @@ public class FolderTreeBuilder {
      * @param folders Folder records mapped from database
      * @return List of root FolderTree records
      */
-    public static List<FolderTree> buildFolderTree(List<Folder> folders) {
+    public static List<app.markdownotes.data.FolderNode> buildFolderTree(List<Folder> folders) {
         Map<String, FolderNode> lookup = folders.stream()
-                .collect(Collectors.toMap(Folder::path, FolderNode::new));
+                .collect(Collectors.toMap(Folder::path, FolderTreeBuilder.FolderNode::new));
 
         lookup.values().forEach(folderNode -> {
             int lastDotIndex = folderNode.path.lastIndexOf('.');
@@ -41,7 +40,7 @@ public class FolderTreeBuilder {
                     int lastDotIndex = node.path.lastIndexOf('.');
                     return lastDotIndex >= 0 || !lookup.containsKey(node.path.substring(0, lastDotIndex));
                 })
-                .map(FolderNode::toFolderTree)
+                .map(FolderTreeBuilder.FolderNode::toFolderTree)
                 .collect(Collectors.toList());
     }
 
@@ -70,11 +69,11 @@ public class FolderTreeBuilder {
          * Convert FolderNode and its descendants to FolderTree record to ensure immutability.
          * @return FolderTree
          */
-        FolderTree toFolderTree() {
-            List<FolderTree> folderTrees = children.stream()
-                    .map(FolderNode::toFolderTree)
+        app.markdownotes.data.FolderNode toFolderTree() {
+            List<app.markdownotes.data.FolderNode> folderNodes = children.stream()
+                    .map(FolderTreeBuilder.FolderNode::toFolderTree)
                     .collect(Collectors.toList());
-            return new FolderTree(id, name, path, folderTrees);
+            return new app.markdownotes.data.FolderNode(id, name, path, folderNodes);
         }
     }
 }
